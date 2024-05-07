@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "3973260064",
+    "project_id": "myscanner-d6925",
+    "storage_bucket": "myscanner-d6925.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:3973260064:android:3ef59ba36413069fd1ed45",
+        "android_client_info": {
+          "package_name": "com.dtran.scanner"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC6pNwERi19nm1kJ9XJpd4Yq8hdztpdwwU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
