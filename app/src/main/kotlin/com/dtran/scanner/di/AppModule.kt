@@ -1,0 +1,87 @@
+package com.dtran.scanner.di
+
+import androidx.room.Room
+import com.dtran.scanner.BuildConfig
+import com.dtran.scanner.data.database.AppDatabase
+import com.dtran.scanner.data.database.dao.CountryDao
+import com.dtran.scanner.data.network.repository.ApiRepository
+import com.dtran.scanner.data.network.repository.FirebaseRepository
+import com.dtran.scanner.ui.screen.flag.FlagViewModel
+import com.dtran.scanner.ui.screen.list.ListViewModel
+import com.dtran.scanner.ui.screen.login.LoginViewModel
+import com.dtran.scanner.ui.screen.result.ResultViewModel
+import com.dtran.scanner.ui.screen.scan.ScanViewModel
+import io.ktor.client.*
+import io.ktor.client.engine.okhttp.*
+import io.ktor.client.plugins.*
+import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.request.*
+import io.ktor.http.*
+import io.ktor.serialization.kotlinx.json.*
+import kotlinx.serialization.json.Json
+import okhttp3.logging.HttpLoggingInterceptor
+import org.koin.android.ext.koin.androidApplication
+import org.koin.android.ext.koin.androidContext
+import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.dsl.module
+
+val networkModule = module {
+    // Ktor Client
+    single {
+        HttpClient(OkHttp) {
+            engine {
+                config {
+                    followRedirects(true)
+                    addInterceptor(HttpLoggingInterceptor().apply { setLevel(HttpLoggingInterceptor.Level.BODY) })
+                }
+            }
+
+            expectSuccess = true
+            HttpResponseValidator {
+                handleResponseExceptionWithRequest { exception, _ ->
+                    val clientException =
+                        exception as? ClientRequestException ?: return@handleResponseExceptionWithRequest
+                    val exceptionResponse = clientException.response
+                    throw Exception("Error ${exceptionResponse.status.value}")
+                }
+            }
+
+            install(DefaultRequest) {
+                url(BuildConfig.BASE_URL)
+                header(HttpHeaders.ContentType, ContentType.Application.Json)
+            }
+            install(ContentNegotiation) {
+                json(Json {
+                    isLenient = true
+                    ignoreUnknownKeys = true
+                })
+            }
+        }
+    }
+
+    // Repository
+    single { FirebaseRepository() }
+    single { ApiRepository(get(), get(), androidContext()) }
+}
+
+val databaseModule = module {
+    single {
+        Room.databaseBuilder(androidApplication(), AppDatabase::class.java, "Mydatabase")
+            .fallbackToDestructiveMigration().build()
+    }
+
+    single<CountryDao> {
+        get<AppDatabase>().countryDao
+    }
+}
+
+
+val viewModelModule = module {
+    // ViewModel
+    viewModel { LoginViewModel(get()) }
+    viewModel { ResultViewModel(get()) }
+    viewModel { ListViewModel(get()) }
+    viewModel { ScanViewModel(get()) }
+    viewModel { ScanViewModel(get()) }
+    viewModel { FlagViewModel(get()) }
+}
