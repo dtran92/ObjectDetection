@@ -7,10 +7,5 @@ plugins {
     alias(libs.plugins.firebase.perf) apply false
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.kotlinx.serialization) apply false
-}
-
-buildscript {
-    dependencies {
-        classpath(kotlin("gradle-plugin", version = "1.9.23"))
-    }
+    alias(libs.plugins.compose.compiler) apply false
 }
