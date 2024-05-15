@@ -27,7 +27,6 @@ import com.dtran.scanner.ui.widget.TopBar
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
-import java.net.URLEncoder
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -152,12 +151,7 @@ fun ListScreen(
                                 if (!revealedItemList.value.contains(item)) {
                                     viewModel.resetRevealedList()
                                     navController.navigate(
-                                        Screen.WebScreen.route + "/${
-                                            URLEncoder.encode(
-                                                item.url,
-                                                "UTF-8"
-                                            )
-                                        }"
+                                        Screen.WebScreen(url = item.url)
                                     )
                                 } else {
                                     viewModel.onItemCollapsed(item)

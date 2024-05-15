@@ -48,9 +48,9 @@ class MainActivity : ComponentActivity() {
 
                     KoinAndroidContext {
                         Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }, bottomBar = {
-                            if (navController.currentBackStackEntryAsState().value?.destination?.route != Screen.LoginScreen.route &&
-                                navController.currentBackStackEntryAsState().value?.destination?.route != Screen.ScanScreen.route
-                            ) BottomBar(
+                            if (navController.currentBackStackEntryAsState().value?.destination?.route != Screen.LoginScreen.javaClass.canonicalName &&
+                                navController.currentBackStackEntryAsState().value?.destination?.route != Screen.ScanScreen.javaClass.canonicalName)
+                                BottomBar(
                                 rootNavController = navController
                             )
                         }) {

@@ -67,7 +67,7 @@ fun FlagScreen(
     // Either go to home page or the page above home
     BackHandler {
         // navController.popBackStack()
-        navController.navigate(TopLevelRoute.HomeRoute.route) {
+        navController.navigate(TopLevelRoute.HomeRoute) {
             popUpTo(navController.graph.findStartDestination().id) {
                 saveState = false
             }

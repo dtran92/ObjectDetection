@@ -1,5 +1,6 @@
 package com.dtran.scanner.navigation
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.material3.SnackbarHostState
@@ -10,6 +11,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
+import androidx.navigation.toRoute
 import com.airbnb.lottie.compose.LottieCompositionResult
 import com.dtran.scanner.ui.screen.flag.FlagScreen
 import com.dtran.scanner.ui.screen.home.HomeScreen
@@ -22,6 +24,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
 
+@SuppressLint("RestrictedApi")
 @Composable
 fun Navigation(
     navController: NavHostController,
@@ -34,12 +37,12 @@ fun Navigation(
 
     NavHost(
         navController = navController,
-        startDestination = if (currentUser != null) TopLevelRoute.HomeRoute.route else Screen.LoginScreen.route,
+        startDestination = if (currentUser != null) TopLevelRoute.HomeRoute else Screen.LoginScreen,
         enterTransition = { EnterTransition.None },
         exitTransition = { ExitTransition.None },
         modifier = modifier
     ) {
-        composable(Screen.LoginScreen.route) {
+        composable<Screen.LoginScreen> {
             LoginScreen(
                 navController = navController,
                 snackbarHostState = snackbarHostState,
@@ -47,29 +50,28 @@ fun Navigation(
             )
 
         }
-        navigation(route = TopLevelRoute.HomeRoute.route, startDestination = Screen.HomeScreen.route) {
-            composable(Screen.HomeScreen.route) {
+        navigation(route = TopLevelRoute.HomeRoute::class, startDestination = Screen.HomeScreen::class) {
+            composable<Screen.HomeScreen> {
                 HomeScreen(
                     navController = navController,
                     snackbarHostState = snackbarHostState,
                     snackbarScope = snackbarScope,
                 )
             }
-            composable(Screen.ListScreen.route) {
+            composable<Screen.ListScreen> {
                 ListScreen(
                     navController = navController,
                     snackbarHostState = snackbarHostState,
                     lottieComposition = lottieComposition
                 )
-
             }
-            composable(Screen.ScanScreen.route) {
+            composable<Screen.ScanScreen> {
                 ScanScreen(navController = navController, lottieCompositionResult = lottieComposition)
 
             }
-            composable(Screen.ResultScreen.route + "/{base64String}" + "/{label}") {
-                val base64String = it.arguments?.getString("base64String") ?: ""
-                val label = it.arguments?.getString("label") ?: ""
+            composable<Screen.ResultScreen> {
+                val base64String = it.toRoute<Screen.ResultScreen>().base64String
+                val label = it.toRoute<Screen.ResultScreen>().label
                 ResultScreen(
                     label = label,
                     base64String = base64String,
@@ -79,14 +81,14 @@ fun Navigation(
                 )
 
             }
-            composable(Screen.WebScreen.route + "/{url}") {
-                val url = it.arguments?.getString("url") ?: ""
+            composable<Screen.WebScreen> {
+                val url = it.toRoute<Screen.WebScreen>().url
                 WebScreen(url = url, navController = navController, lottieCompositionResult = lottieComposition)
 
             }
         }
-        navigation(route = TopLevelRoute.FlagRoute.route, startDestination = Screen.CountryListScreen.route) {
-            composable(Screen.CountryListScreen.route) {
+        navigation(route = TopLevelRoute.FlagRoute::class, startDestination = Screen.CountryListScreen::class) {
+            composable<Screen.CountryListScreen> {
                 FlagScreen(
                     navController = navController,
                     lottieCompositionResult = lottieComposition,

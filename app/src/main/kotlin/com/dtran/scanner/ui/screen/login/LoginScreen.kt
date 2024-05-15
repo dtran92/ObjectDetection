@@ -136,7 +136,7 @@ fun LoginScreen(
                             password.value,
                             showProgressBarState,
                             snackbarHostState
-                        ) { navController.navigate(TopLevelRoute.HomeRoute.route) }
+                        ) { navController.navigate(TopLevelRoute.HomeRoute) }
                     }, modifier = modifier
                         .sizeIn(minWidth = 120.dp, minHeight = TextFieldDefaults.MinHeight)
                 ) {
@@ -158,7 +158,7 @@ fun LoginScreen(
                             password.value,
                             showProgressBarState,
                             snackbarHostState
-                        ) { navController.navigate(TopLevelRoute.HomeRoute.route) }
+                        ) { navController.navigate(TopLevelRoute.HomeRoute) }
                     },
                     modifier = modifier
                         .sizeIn(minWidth = 120.dp, minHeight = TextFieldDefaults.MinHeight)

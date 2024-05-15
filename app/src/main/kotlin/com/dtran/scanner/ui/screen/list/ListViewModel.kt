@@ -89,7 +89,10 @@ class ListViewModel(private val firebaseRepository: FirebaseRepository) : ViewMo
     fun onItemExpanded(item: ItemUiModel) {
         if (_revealedItemList.value.contains(item)) return
         _revealedItemList.update {
-            it.toMutableList().apply { this.add(item) }
+            it.toMutableList().apply {
+                clear()
+                add(item)
+            }
         }
     }
 

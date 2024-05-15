@@ -51,9 +51,9 @@ fun BottomBar(
     }
 }
 
-enum class BottomBarItem(val route: String, val iconId: Int, @StringRes val label: Int) {
-    Home(TopLevelRoute.HomeRoute.route, R.drawable.ic_home, R.string.label_home),
-    Flag(TopLevelRoute.FlagRoute.route, R.drawable.ic_flag, R.string.label_flag)
+enum class BottomBarItem(val route: TopLevelRoute, val iconId: Int, @StringRes val label: Int) {
+    Home(TopLevelRoute.HomeRoute, R.drawable.ic_home, R.string.label_home),
+    Flag(TopLevelRoute.FlagRoute, R.drawable.ic_flag, R.string.label_flag)
 }
 
 /**
@@ -67,7 +67,7 @@ private fun NavController.currentBottomBarItemAsState(): State<BottomBarItem> {
     DisposableEffect(this) {
         val listener = NavController.OnDestinationChangedListener { _, destination, _ ->
             when {
-                destination.hierarchy.any { it.route == BottomBarItem.Flag.route } -> {
+                destination.hierarchy.any { it.route == BottomBarItem.Flag.toString() } -> {
                     selectedItem.value = BottomBarItem.Flag
                 }
 

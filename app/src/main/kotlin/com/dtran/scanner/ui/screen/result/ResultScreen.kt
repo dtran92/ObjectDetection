@@ -71,8 +71,8 @@ fun ResultScreen(
             Text(text = label, textAlign = TextAlign.Center)
             Button(onClick = {
                 uploadPhoto(coroutineScope, viewModel, label, imageBytes, showProgressBarState, snackbarHostState) {
-                    navController.navigate(Screen.ListScreen.route) {
-                        popUpTo(Screen.HomeScreen.route)
+                    navController.navigate(Screen.ListScreen) {
+                        popUpTo(Screen.HomeScreen)
                     }
                 }
             }) {

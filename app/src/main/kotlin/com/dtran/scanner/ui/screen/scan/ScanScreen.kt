@@ -18,10 +18,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavHostController
 import com.airbnb.lottie.AsyncUpdates
 import com.airbnb.lottie.compose.LottieAnimation
@@ -41,7 +41,6 @@ import com.google.mlkit.common.model.RemoteModelManager
 import com.google.mlkit.linkfirebase.FirebaseModelSource
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.compose.koinViewModel
-import java.net.URLEncoder
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -141,11 +140,12 @@ fun ScanScreen(
                 Button(
                     onClick = {
                         navController.navigate(
-                            Screen.ResultScreen.route
-                                    + "/${URLEncoder.encode(image.value, "UTF-8")}"
-                                    + "/${label.value}"
+                            Screen.ResultScreen(
+                                base64String = image.value,
+                                label = label.value
+                            )
                         ) {
-                            popUpTo(Screen.HomeScreen.route)
+                            popUpTo(Screen.HomeScreen)
                         }
                     },
                     shape = CircleShape,

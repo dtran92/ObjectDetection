@@ -44,7 +44,7 @@ fun HomeScreen(
     val cameraPermission = rememberPermissionState(
         permission = Manifest.permission.CAMERA
     ) {
-        if (it) navController.navigate(Screen.ScanScreen.route)
+        if (it) navController.navigate(Screen.ScanScreen)
         else snackbarScope.launch {
             snackbarHostState.showSnackbar(context.getString(R.string.permission_camera))
         }
@@ -108,7 +108,7 @@ fun HomeScreen(
                 ) {
                     Card(
                         shape = RoundedCornerShape(10.dp),
-                        onClick = { navController.navigate(Screen.ListScreen.route) },
+                        onClick = { navController.navigate(Screen.ListScreen) },
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_box),
@@ -130,8 +130,8 @@ fun HomeScreen(
             Spacer(modifier = modifier.height(30.dp))
             LogoutText {
                 Firebase.auth.signOut()
-                navController.popBackStack(Screen.HomeScreen.route, true)
-                navController.navigate(Screen.LoginScreen.route)
+                navController.popBackStack(Screen.HomeScreen, true)
+                navController.navigate(Screen.LoginScreen)
             }
         }
     }

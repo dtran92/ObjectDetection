@@ -1,16 +1,41 @@
 package com.dtran.scanner.navigation
 
-sealed class Screen(val route: String) {
-    data object LoginScreen : Screen("login_screen")
-    data object HomeScreen : Screen("home_screen")
-    data object ScanScreen : Screen("scan_screen")
-    data object ListScreen : Screen("list_screen")
-    data object ResultScreen : Screen("result_screen")
-    data object WebScreen : Screen("web_screen")
-    data object CountryListScreen : Screen("country_list_screen")
+import kotlinx.serialization.Serializable
+
+@Serializable
+sealed class Screen {
+    @Serializable
+    data object LoginScreen : Screen()
+
+    @Serializable
+    data object HomeScreen : Screen()
+
+    @Serializable
+    data object ScanScreen : Screen()
+
+    @Serializable
+    data object ListScreen : Screen()
+
+    @Serializable
+    data class ResultScreen(
+        val base64String: String,
+        val label: String
+    ) : Screen()
+
+    @Serializable
+    data class WebScreen(
+        val url: String
+    ) : Screen()
+
+    @Serializable
+    data object CountryListScreen : Screen()
 }
 
-sealed class TopLevelRoute(val route: String) {
-    data object HomeRoute : TopLevelRoute("home_route")
-    data object FlagRoute : TopLevelRoute("flag_route")
+@Serializable
+sealed class TopLevelRoute {
+    @Serializable
+    data object HomeRoute : TopLevelRoute()
+
+    @Serializable
+    data object FlagRoute : TopLevelRoute()
 }
