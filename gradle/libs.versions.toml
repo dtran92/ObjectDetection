@@ -26,8 +26,8 @@ room = "2.6.1"
 splashscreen = "1.0.1"
 testExtJunit = "1.1.5"
 
-kotlin = "2.0.0-RC3"
-ksp = "2.0.0-RC3-1.0.20"
+kotlin = "2.0.0"
+ksp = "2.0.0-1.0.21"
 
 [libraries]
 # Android
