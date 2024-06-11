@@ -13,6 +13,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.dtran.scanner.R
+import com.dtran.scanner.navigation.Screen
 import com.dtran.scanner.navigation.TopLevelRoute
 
 @Composable
@@ -23,22 +24,21 @@ fun BottomBar(
         val currentTopLevelDestination by rootNavController.currentBottomBarItemAsState()
         BottomBarItem.entries.forEach { screen ->
             val isTabSelected = screen == currentTopLevelDestination
-
             NavigationBarItem(
                 isTabSelected, onClick = {
-                    rootNavController.navigate(screen.route) {
+                    if (!isTabSelected) rootNavController.navigate(screen.route) {
                         popUpTo(rootNavController.graph.findStartDestination().id) {
                             saveState = !isTabSelected
-                    }
-                    launchSingleTop = true
+                        }
+                        launchSingleTop = true
                         restoreState = !isTabSelected
-                }
-            }, icon = {
-                Icon(
-                    ImageVector.vectorResource(id = screen.iconId),
-                    contentDescription = null,
-                    modifier = modifier.size(36.dp)
-                )
+                    }
+                }, icon = {
+                    Icon(
+                        ImageVector.vectorResource(id = screen.iconId),
+                        contentDescription = null,
+                        modifier = modifier.size(36.dp)
+                    )
                 }, colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = Color(0xFFFF95C9),
                     selectedTextColor = Color(0xFFFF95C9),
@@ -67,7 +67,7 @@ private fun NavController.currentBottomBarItemAsState(): State<BottomBarItem> {
     DisposableEffect(this) {
         val listener = NavController.OnDestinationChangedListener { _, destination, _ ->
             when {
-                destination.hierarchy.any { it.route == BottomBarItem.Flag.toString() } -> {
+                destination.hierarchy.any { it.route == Screen.CountryListScreen.javaClass.canonicalName } -> {
                     selectedItem.value = BottomBarItem.Flag
                 }
 
