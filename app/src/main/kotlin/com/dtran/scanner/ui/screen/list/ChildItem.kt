@@ -16,17 +16,13 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
-import com.airbnb.lottie.AsyncUpdates
-import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieCompositionResult
-import com.airbnb.lottie.compose.LottieConstants
 import com.dtran.scanner.ui.model.ItemUiModel
+import com.dtran.scanner.ui.widget.ProgressIndicator
 
 @Composable
 fun ChildItem(
     item: ItemUiModel,
     onItemClicked: () -> Unit,
-    composition: LottieCompositionResult,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -41,17 +37,7 @@ fun ChildItem(
         SubcomposeAsyncImage(
             model = item.url,
             loading = {
-//                CircularProgressIndicator(
-//                    strokeCap = StrokeCap.Round,
-//                    modifier = modifier.wrapContentSize(),
-//                    color = MaterialTheme.colorScheme.secondary
-//                )
-                LottieAnimation(
-                    composition.value,
-                    iterations = LottieConstants.IterateForever,
-                    asyncUpdates = AsyncUpdates.ENABLED,
-                    modifier = modifier.wrapContentSize()
-                )
+                ProgressIndicator(showProgressBarState = true, modifier = modifier.wrapContentSize())
             },
             contentDescription = null,
             contentScale = ContentScale.Crop,

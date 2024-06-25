@@ -7,6 +7,7 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -15,7 +16,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavHostController
-import com.airbnb.lottie.compose.LottieCompositionResult
 import com.dtran.scanner.ui.widget.ProgressIndicator
 import com.dtran.scanner.ui.widget.TopBar
 
@@ -24,8 +24,7 @@ import com.dtran.scanner.ui.widget.TopBar
 fun WebScreen(
     url: String,
     navController: NavHostController,
-    modifier: Modifier = Modifier,
-    lottieCompositionResult: LottieCompositionResult
+    modifier: Modifier = Modifier
 ) {
     val progressIndicator = remember { mutableStateOf(false) }
     var webView: WebView? = remember { null }
@@ -79,5 +78,5 @@ fun WebScreen(
         }, update = { wv -> webView = wv })
     }
 
-    ProgressIndicator(showProgressBarState = progressIndicator.value, lottieCompositionResult, modifier = modifier)
+    ProgressIndicator(showProgressBarState = progressIndicator.value, modifier = modifier.fillMaxSize())
 }

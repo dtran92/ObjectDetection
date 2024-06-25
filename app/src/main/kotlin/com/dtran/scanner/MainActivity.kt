@@ -17,8 +17,6 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.rememberLottieComposition
 import com.dtran.scanner.navigation.Navigation
 import com.dtran.scanner.navigation.Screen
 import com.dtran.scanner.ui.theme.ScannerTheme
@@ -43,22 +41,20 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()
                     val snackbarHostState = remember { SnackbarHostState() }
                     val snackbarScope = rememberCoroutineScope()
-                    val lottieComposition =
-                        rememberLottieComposition(LottieCompositionSpec.Asset("animations/animation_loading.json"))
 
                     KoinAndroidContext {
                         Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }, bottomBar = {
                             if (navController.currentBackStackEntryAsState().value?.destination?.route != Screen.LoginScreen.javaClass.canonicalName &&
-                                navController.currentBackStackEntryAsState().value?.destination?.route != Screen.ScanScreen.javaClass.canonicalName)
-                                BottomBar(
-                                rootNavController = navController
+                                navController.currentBackStackEntryAsState().value?.destination?.route != Screen.ScanScreen.javaClass.canonicalName
                             )
+                                BottomBar(
+                                    rootNavController = navController
+                                )
                         }) {
                             Navigation(
                                 navController = navController,
                                 snackbarHostState = snackbarHostState,
                                 snackbarScope = snackbarScope,
-                                lottieComposition = lottieComposition,
                                 modifier = Modifier
                                     .padding(it)
                                     .clickable(

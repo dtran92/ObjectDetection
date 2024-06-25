@@ -22,9 +22,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import coil.compose.SubcomposeAsyncImage
-import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieCompositionResult
-import com.airbnb.lottie.compose.LottieConstants
 import com.dtran.scanner.R
 import com.dtran.scanner.data.common.Resource
 import com.dtran.scanner.navigation.TopLevelRoute
@@ -40,7 +37,6 @@ fun FlagScreen(
     modifier: Modifier = Modifier,
     viewModel: FlagViewModel = koinViewModel(),
     navController: NavHostController,
-    lottieCompositionResult: LottieCompositionResult,
 ) {
     val countryList = viewModel.countryList.collectAsStateWithLifecycle()
     val progressIndicatorState = remember { mutableStateOf(false) }
@@ -90,11 +86,10 @@ fun FlagScreen(
                         item = country,
                         onClickCallback = { },
                         modifier = modifier,
-                        composition = lottieCompositionResult
                     )
                 }
             }
-            ProgressIndicator(progressIndicatorState.value, lottieCompositionResult, modifier)
+            ProgressIndicator(showProgressBarState = progressIndicatorState.value, modifier = modifier.fillMaxSize())
         }
     }
 }
@@ -103,8 +98,7 @@ fun FlagScreen(
 fun CountryItem(
     item: CountryUiModel,
     onClickCallback: (CountryUiModel) -> Unit,
-    modifier: Modifier,
-    composition: LottieCompositionResult
+    modifier: Modifier = Modifier,
 ) {
 
     Row(modifier = modifier
@@ -112,11 +106,7 @@ fun CountryItem(
         .clickable { onClickCallback.invoke(item) }) {
         SubcomposeAsyncImage(
             model = item.media?.flag, loading = {
-                LottieAnimation(
-                    composition.value,
-                    iterations = LottieConstants.IterateForever,
-                    modifier = modifier.wrapContentSize()
-                )
+                ProgressIndicator(showProgressBarState = true, modifier = modifier.fillMaxSize())
             }, contentDescription = null, modifier = modifier.size(150.dp)
         )
         Text(text = item.name ?: "", modifier = modifier.align(Alignment.CenterVertically))

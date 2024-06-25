@@ -1,10 +1,7 @@
 package com.dtran.scanner.ui.screen.list
 
 import android.annotation.SuppressLint
-import androidx.compose.animation.core.MutableTransitionState
-import androidx.compose.animation.core.animateDp
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.core.updateTransition
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
@@ -17,7 +14,6 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import com.airbnb.lottie.compose.LottieCompositionResult
 import com.dtran.scanner.R
 import com.dtran.scanner.ui.model.ItemUiModel
 
@@ -31,15 +27,15 @@ fun DraggableCard(
     isRevealed: Boolean,
     onExpand: () -> Unit,
     onCollapse: () -> Unit,
-    modifier: Modifier,
-    onItemClicked: () -> Unit, composition: LottieCompositionResult
+    modifier: Modifier = Modifier,
+    onItemClicked: () -> Unit
 ) {
     val transitionState = remember {
         MutableTransitionState(isRevealed).apply {
             targetState = !isRevealed
         }
     }
-    val transition = updateTransition(transitionState, null)
+    val transition = rememberTransition(transitionState, null)
 //    val cardBgColor by transition.animateColor(
 //        label = "cardBgColorTransition",
 //        transitionSpec = { tween(durationMillis = ANIMATION_DURATION) },
@@ -79,5 +75,5 @@ fun DraggableCard(
 //        backgroundColor = cardBgColor,
 //        shape = remember { RoundedCornerShape(10.dp) },
 //        elevation = CardElevation,
-        content = { ChildItem(item = item, onItemClicked = onItemClicked, composition = composition) })
+        content = { ChildItem(item = item, onItemClicked = onItemClicked) })
 }

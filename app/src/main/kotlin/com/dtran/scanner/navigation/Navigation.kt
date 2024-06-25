@@ -12,7 +12,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.toRoute
-import com.airbnb.lottie.compose.LottieCompositionResult
 import com.dtran.scanner.ui.screen.flag.FlagScreen
 import com.dtran.scanner.ui.screen.home.HomeScreen
 import com.dtran.scanner.ui.screen.list.ListScreen
@@ -30,7 +29,6 @@ fun Navigation(
     navController: NavHostController,
     snackbarHostState: SnackbarHostState,
     snackbarScope: CoroutineScope,
-    lottieComposition: LottieCompositionResult,
     modifier: Modifier
 ) {
     val currentUser = remember { Firebase.auth.currentUser }
@@ -46,7 +44,6 @@ fun Navigation(
             LoginScreen(
                 navController = navController,
                 snackbarHostState = snackbarHostState,
-                lottieCompositionResult = lottieComposition
             )
 
         }
@@ -62,11 +59,10 @@ fun Navigation(
                 ListScreen(
                     navController = navController,
                     snackbarHostState = snackbarHostState,
-                    lottieComposition = lottieComposition
                 )
             }
             composable<Screen.ScanScreen> {
-                ScanScreen(navController = navController, lottieCompositionResult = lottieComposition)
+                ScanScreen(navController = navController)
 
             }
             composable<Screen.ResultScreen> {
@@ -77,13 +73,12 @@ fun Navigation(
                     base64String = base64String,
                     snackbarHostState = snackbarHostState,
                     navController = navController,
-                    lottieCompositionResult = lottieComposition
                 )
 
             }
             composable<Screen.WebScreen> {
                 val url = it.toRoute<Screen.WebScreen>().url
-                WebScreen(url = url, navController = navController, lottieCompositionResult = lottieComposition)
+                WebScreen(url = url, navController = navController)
 
             }
         }
@@ -91,7 +86,6 @@ fun Navigation(
             composable<Screen.CountryListScreen> {
                 FlagScreen(
                     navController = navController,
-                    lottieCompositionResult = lottieComposition,
                 )
             }
         }

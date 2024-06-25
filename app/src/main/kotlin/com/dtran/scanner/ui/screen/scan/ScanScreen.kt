@@ -16,20 +16,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavHostController
-import com.airbnb.lottie.AsyncUpdates
-import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieCompositionResult
-import com.airbnb.lottie.compose.LottieConstants
 import com.dtran.scanner.R
 import com.dtran.scanner.data.Status
 import com.dtran.scanner.navigation.Screen
+import com.dtran.scanner.ui.widget.ProgressIndicator
 import com.dtran.scanner.ui.widget.TopBar
 import com.dtran.scanner.util.Constant
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -47,8 +43,7 @@ import org.koin.androidx.compose.koinViewModel
 fun ScanScreen(
     navController: NavHostController,
     modifier: Modifier = Modifier,
-    viewModel: ScanViewModel = koinViewModel(),
-    lottieCompositionResult: LottieCompositionResult
+    viewModel: ScanViewModel = koinViewModel()
 ) {
     val cameraPermission = rememberPermissionState(permission = android.Manifest.permission.CAMERA) {
         if (!it) navController.popBackStack()
@@ -166,20 +161,8 @@ fun ScanScreen(
         }
     }
 
-    when (isModelReady.value and isItemReady.value) {
-        false -> Box(
-            modifier = modifier
-                .fillMaxSize()
-                .pointerInput(Unit) { }, contentAlignment = Alignment.Center
-        ) {
-//            CircularProgressIndicator(strokeCap = StrokeCap.Round)
-            LottieAnimation(
-                lottieCompositionResult.value,
-                iterations = LottieConstants.IterateForever,
-                asyncUpdates = AsyncUpdates.ENABLED
-            )
-        }
-
-        true -> {}
-    }
+    ProgressIndicator(
+        showProgressBarState = !(isModelReady.value and isItemReady.value),
+        modifier = modifier.fillMaxSize()
+    )
 }

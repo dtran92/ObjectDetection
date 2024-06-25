@@ -18,7 +18,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
-import com.airbnb.lottie.compose.LottieCompositionResult
 import com.dtran.scanner.R
 import com.dtran.scanner.data.Status
 import com.dtran.scanner.navigation.Screen
@@ -34,8 +33,7 @@ fun ListScreen(
     modifier: Modifier = Modifier,
     viewModel: ListViewModel = koinViewModel(),
     snackbarHostState: SnackbarHostState,
-    navController: NavHostController,
-    lottieComposition: LottieCompositionResult
+    navController: NavHostController
 ) {
 
     val itemList = viewModel.itemList.collectAsStateWithLifecycle()
@@ -157,8 +155,6 @@ fun ListScreen(
                                     viewModel.onItemCollapsed(item)
                                 }
                             },
-                            modifier = modifier,
-                            composition = lottieComposition
                         )
                     }
 //                    val dismissState = rememberSwipeToDismissState(confirmValueChange = {
@@ -241,5 +237,5 @@ fun ListScreen(
         }
     }
 
-    ProgressIndicator(progressIndicatorState.value, lottieComposition, modifier)
+    ProgressIndicator(progressIndicatorState.value, modifier = modifier.fillMaxSize())
 }

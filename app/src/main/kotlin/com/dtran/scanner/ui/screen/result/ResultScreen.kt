@@ -18,7 +18,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.airbnb.lottie.compose.LottieCompositionResult
 import com.dtran.scanner.R
 import com.dtran.scanner.data.Status
 import com.dtran.scanner.navigation.Screen
@@ -37,7 +36,6 @@ fun ResultScreen(
     viewModel: ResultViewModel = koinViewModel(),
     snackbarHostState: SnackbarHostState,
     navController: NavHostController,
-    lottieCompositionResult: LottieCompositionResult
 ) {
     val imageBytes = Base64.decode(base64String, Base64.DEFAULT)
     val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
@@ -83,8 +81,7 @@ fun ResultScreen(
 
     ProgressIndicator(
         showProgressBarState = showProgressBarState.value,
-        composition = lottieCompositionResult,
-        modifier = modifier
+        modifier = modifier.fillMaxSize()
     )
 }
 

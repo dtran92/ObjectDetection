@@ -30,7 +30,6 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.airbnb.lottie.compose.LottieCompositionResult
 import com.dtran.scanner.R
 import com.dtran.scanner.data.Status
 import com.dtran.scanner.navigation.TopLevelRoute
@@ -46,7 +45,6 @@ fun LoginScreen(
     modifier: Modifier = Modifier,
     viewModel: LoginViewModel = koinViewModel(),
     snackbarHostState: SnackbarHostState,
-    lottieCompositionResult: LottieCompositionResult,
 ) {
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
@@ -176,7 +174,7 @@ fun LoginScreen(
         }
     }
 
-    ProgressIndicator(showProgressBarState.value, lottieCompositionResult, modifier)
+    ProgressIndicator(showProgressBarState.value, modifier = modifier.fillMaxSize())
 }
 
 fun onRegisterButtonClicked(
