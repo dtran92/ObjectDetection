@@ -19,12 +19,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.NavHostController
 import coil.compose.SubcomposeAsyncImage
 import com.dtran.scanner.R
 import com.dtran.scanner.data.common.Resource
-import com.dtran.scanner.navigation.TopLevelRoute
 import com.dtran.scanner.ui.model.CountryUiModel
 import com.dtran.scanner.ui.widget.ProgressIndicator
 import com.dtran.scanner.ui.widget.TopBar
@@ -36,7 +33,7 @@ import org.koin.androidx.compose.koinViewModel
 fun FlagScreen(
     modifier: Modifier = Modifier,
     viewModel: FlagViewModel = koinViewModel(),
-    navController: NavHostController,
+    goBack: () -> Unit
 ) {
     val countryList = viewModel.countryList.collectAsStateWithLifecycle()
     val progressIndicatorState = remember { mutableStateOf(false) }
@@ -62,14 +59,7 @@ fun FlagScreen(
 
     // Either go to home page or the page above home
     BackHandler {
-        // navController.popBackStack()
-        navController.navigate(TopLevelRoute.HomeRoute) {
-            popUpTo(navController.graph.findStartDestination().id) {
-                saveState = false
-            }
-            launchSingleTop = true
-            restoreState = true
-        }
+        goBack.invoke()
     }
 
     Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }, topBar = {

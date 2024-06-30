@@ -29,10 +29,8 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
 import com.dtran.scanner.R
 import com.dtran.scanner.data.Status
-import com.dtran.scanner.navigation.TopLevelRoute
 import com.dtran.scanner.ui.widget.ProgressIndicator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collectLatest
@@ -41,7 +39,7 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun LoginScreen(
-    navController: NavHostController,
+    goToHome: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: LoginViewModel = koinViewModel(),
     snackbarHostState: SnackbarHostState,
@@ -133,8 +131,9 @@ fun LoginScreen(
                             email.value,
                             password.value,
                             showProgressBarState,
-                            snackbarHostState
-                        ) { navController.navigate(TopLevelRoute.HomeRoute) }
+                            snackbarHostState,
+                            goToHome
+                        )
                     }, modifier = modifier
                         .sizeIn(minWidth = 120.dp, minHeight = TextFieldDefaults.MinHeight)
                 ) {
@@ -155,8 +154,9 @@ fun LoginScreen(
                             email.value,
                             password.value,
                             showProgressBarState,
-                            snackbarHostState
-                        ) { navController.navigate(TopLevelRoute.HomeRoute) }
+                            snackbarHostState,
+                            goToHome
+                        )
                     },
                     modifier = modifier
                         .sizeIn(minWidth = 120.dp, minHeight = TextFieldDefaults.MinHeight)

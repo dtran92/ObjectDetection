@@ -17,10 +17,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
 import com.dtran.scanner.R
 import com.dtran.scanner.data.Status
-import com.dtran.scanner.navigation.Screen
 import com.dtran.scanner.ui.widget.ProgressIndicator
 import com.dtran.scanner.ui.widget.TopBar
 import kotlinx.coroutines.CoroutineScope
@@ -35,7 +33,8 @@ fun ResultScreen(
     modifier: Modifier = Modifier,
     viewModel: ResultViewModel = koinViewModel(),
     snackbarHostState: SnackbarHostState,
-    navController: NavHostController,
+    goBack: () -> Unit,
+    goToList: () -> Unit
 ) {
     val imageBytes = Base64.decode(base64String, Base64.DEFAULT)
     val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
@@ -43,9 +42,11 @@ fun ResultScreen(
     val coroutineScope = rememberCoroutineScope()
 
     Scaffold(topBar = {
-        TopBar(isHome = false,
+        TopBar(
+            isHome = false,
             title = stringResource(id = R.string.title_result),
-            onBackArrowPressed = { navController.popBackStack() })
+            onBackArrowPressed = goBack
+        )
     },
         snackbarHost = { SnackbarHost(snackbarHostState) }) { padding ->
         Column(
@@ -68,11 +69,15 @@ fun ResultScreen(
             )
             Text(text = label, textAlign = TextAlign.Center)
             Button(onClick = {
-                uploadPhoto(coroutineScope, viewModel, label, imageBytes, showProgressBarState, snackbarHostState) {
-                    navController.navigate(Screen.ListScreen) {
-                        popUpTo(Screen.HomeScreen)
-                    }
-                }
+                uploadPhoto(
+                    coroutineScope,
+                    viewModel,
+                    label,
+                    imageBytes,
+                    showProgressBarState,
+                    snackbarHostState,
+                    goToList
+                )
             }) {
                 Text(text = stringResource(id = R.string.upload_photo), style = MaterialTheme.typography.bodyMedium)
             }

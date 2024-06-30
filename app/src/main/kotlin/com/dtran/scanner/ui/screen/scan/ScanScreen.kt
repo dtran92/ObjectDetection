@@ -21,10 +21,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import androidx.navigation.NavHostController
 import com.dtran.scanner.R
 import com.dtran.scanner.data.Status
-import com.dtran.scanner.navigation.Screen
 import com.dtran.scanner.ui.widget.ProgressIndicator
 import com.dtran.scanner.ui.widget.TopBar
 import com.dtran.scanner.util.Constant
@@ -41,12 +39,13 @@ import org.koin.androidx.compose.koinViewModel
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun ScanScreen(
-    navController: NavHostController,
     modifier: Modifier = Modifier,
-    viewModel: ScanViewModel = koinViewModel()
+    viewModel: ScanViewModel = koinViewModel(),
+    goBack: () -> Unit,
+    goToResult: (String, String) -> Unit
 ) {
     val cameraPermission = rememberPermissionState(permission = android.Manifest.permission.CAMERA) {
-        if (!it) navController.popBackStack()
+        if (!it) goBack.invoke()
     }
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -111,7 +110,8 @@ fun ScanScreen(
     Scaffold(topBar = {
         TopBar(isHome = false,
             title = stringResource(id = R.string.title_scan),
-            onBackArrowPressed = { navController.popBackStack() })
+            onBackArrowPressed = goBack
+        )
     }) { padding ->
         Box {
             AndroidView(modifier = modifier
@@ -133,16 +133,7 @@ fun ScanScreen(
             ) {
                 SnackbarHost(snackbarHostState)
                 Button(
-                    onClick = {
-                        navController.navigate(
-                            Screen.ResultScreen(
-                                base64String = image.value,
-                                label = label.value
-                            )
-                        ) {
-                            popUpTo(Screen.HomeScreen)
-                        }
-                    },
+                    onClick = { goToResult.invoke(label.value, image.value) },
                     shape = CircleShape,
                     modifier = modifier
                         .padding(bottom = 20.dp)

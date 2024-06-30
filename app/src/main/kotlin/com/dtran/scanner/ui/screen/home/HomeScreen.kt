@@ -20,9 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 import com.dtran.scanner.R
-import com.dtran.scanner.navigation.Screen
 import com.dtran.scanner.ui.widget.TopBar
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
@@ -38,13 +36,15 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     snackbarHostState: SnackbarHostState,
     snackbarScope: CoroutineScope,
-    navController: NavHostController,
+    goToScan: () -> Unit,
+    goToList: () -> Unit,
+    goToLogin: () -> Unit
 ) {
     val context = LocalContext.current
     val cameraPermission = rememberPermissionState(
         permission = Manifest.permission.CAMERA
     ) {
-        if (it) navController.navigate(Screen.ScanScreen)
+        if (it) goToScan.invoke()
         else snackbarScope.launch {
             snackbarHostState.showSnackbar(context.getString(R.string.permission_camera))
         }
@@ -108,7 +108,7 @@ fun HomeScreen(
                 ) {
                     Card(
                         shape = RoundedCornerShape(10.dp),
-                        onClick = { navController.navigate(Screen.ListScreen) },
+                        onClick = goToList,
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_box),
@@ -130,8 +130,7 @@ fun HomeScreen(
             Spacer(modifier = modifier.height(30.dp))
             LogoutText {
                 Firebase.auth.signOut()
-                navController.popBackStack(Screen.HomeScreen, true)
-                navController.navigate(Screen.LoginScreen)
+                goToLogin.invoke()
             }
         }
     }

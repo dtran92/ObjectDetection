@@ -17,10 +17,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavHostController
 import com.dtran.scanner.R
 import com.dtran.scanner.data.Status
-import com.dtran.scanner.navigation.Screen
 import com.dtran.scanner.ui.widget.ProgressIndicator
 import com.dtran.scanner.ui.widget.TopBar
 import kotlinx.coroutines.flow.collectLatest
@@ -33,7 +31,8 @@ fun ListScreen(
     modifier: Modifier = Modifier,
     viewModel: ListViewModel = koinViewModel(),
     snackbarHostState: SnackbarHostState,
-    navController: NavHostController
+    goBack: () -> Unit,
+    goToWeb: (String) -> Unit
 ) {
 
     val itemList = viewModel.itemList.collectAsStateWithLifecycle()
@@ -94,7 +93,7 @@ fun ListScreen(
             TopBar(
                 isHome = false,
                 title = stringResource(id = R.string.title_list),
-                onBackArrowPressed = { navController.popBackStack() },
+                onBackArrowPressed = goBack,
             )
         },
         modifier = modifier.fillMaxSize(),
@@ -148,9 +147,7 @@ fun ListScreen(
                             onItemClicked = {
                                 if (!revealedItemList.value.contains(item)) {
                                     viewModel.resetRevealedList()
-                                    navController.navigate(
-                                        Screen.WebScreen(url = item.url)
-                                    )
+                                    goToWeb(item.url)
                                 } else {
                                     viewModel.onItemCollapsed(item)
                                 }

@@ -15,7 +15,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.navigation.NavHostController
 import com.dtran.scanner.ui.widget.ProgressIndicator
 import com.dtran.scanner.ui.widget.TopBar
 
@@ -23,21 +22,21 @@ import com.dtran.scanner.ui.widget.TopBar
 @SuppressLint("SetJavaScriptEnabled")
 fun WebScreen(
     url: String,
-    navController: NavHostController,
+    goBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val progressIndicator = remember { mutableStateOf(false) }
     var webView: WebView? = remember { null }
 
     BackHandler {
-        webView?.let { if (it.canGoBack()) it.goBack() else navController.popBackStack() }
-            ?: run { navController.popBackStack() }
+        webView?.let { if (it.canGoBack()) it.goBack() else goBack.invoke() }
+            ?: run { goBack.invoke() }
     }
 
     Scaffold(topBar = {
         TopBar(isHome = false, title = "Web", onBackArrowPressed = {
-            webView?.let { if (it.canGoBack()) it.goBack() else navController.popBackStack() }
-                ?: run { navController.popBackStack() }
+            webView?.let { if (it.canGoBack()) it.goBack() else goBack.invoke() }
+                ?: run { goBack.invoke() }
         })
     }) {
         AndroidView(modifier = modifier.padding(it), factory = { ctx ->

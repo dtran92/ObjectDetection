@@ -1,12 +1,12 @@
 package com.dtran.scanner.navigation
 
-import android.annotation.SuppressLint
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -23,7 +23,6 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.CoroutineScope
 
-@SuppressLint("RestrictedApi")
 @Composable
 fun Navigation(
     navController: NavHostController,
@@ -42,27 +41,48 @@ fun Navigation(
     ) {
         composable<Screen.LoginScreen> {
             LoginScreen(
-                navController = navController,
+                goToHome = { navController.navigate(TopLevelRoute.HomeRoute) },
                 snackbarHostState = snackbarHostState,
             )
 
         }
-        navigation(route = TopLevelRoute.HomeRoute::class, startDestination = Screen.HomeScreen::class) {
+        navigation<TopLevelRoute.HomeRoute>(startDestination = Screen.HomeScreen) {
             composable<Screen.HomeScreen> {
                 HomeScreen(
-                    navController = navController,
                     snackbarHostState = snackbarHostState,
                     snackbarScope = snackbarScope,
+                    goToScan = { navController.navigate(Screen.ScanScreen) },
+                    goToList = { navController.navigate(Screen.ListScreen) },
+                    goToLogin = {
+                        navController.popBackStack(Screen.HomeScreen, true)
+                        navController.navigate(Screen.LoginScreen)
+                    }
                 )
             }
             composable<Screen.ListScreen> {
                 ListScreen(
-                    navController = navController,
                     snackbarHostState = snackbarHostState,
+                    goBack = { navController.popBackStack() },
+                    goToWeb = { url ->
+                        navController.navigate(
+                            Screen.WebScreen(url = url)
+                        )
+                    }
                 )
             }
             composable<Screen.ScanScreen> {
-                ScanScreen(navController = navController)
+                ScanScreen(goBack = { navController.popBackStack() },
+                    goToResult = { base64String, label ->
+                        navController.navigate(
+                            Screen.ResultScreen(
+                                base64String = base64String,
+                                label = label
+                            )
+                        )
+                        {
+                            popUpTo(Screen.HomeScreen)
+                        }
+                    })
 
             }
             composable<Screen.ResultScreen> {
@@ -72,20 +92,34 @@ fun Navigation(
                     label = label,
                     base64String = base64String,
                     snackbarHostState = snackbarHostState,
-                    navController = navController,
-                )
+                    goBack = { navController.popBackStack() },
+                    goToList = {
+                        navController.navigate(Screen.ListScreen) {
+                            popUpTo(Screen.HomeScreen)
+                        }
+                    })
 
             }
             composable<Screen.WebScreen> {
                 val url = it.toRoute<Screen.WebScreen>().url
-                WebScreen(url = url, navController = navController)
+                WebScreen(
+                    url = url, goBack = { navController.popBackStack() },
+                )
 
             }
         }
-        navigation(route = TopLevelRoute.FlagRoute::class, startDestination = Screen.CountryListScreen::class) {
+        navigation<TopLevelRoute.FlagRoute>(startDestination = Screen.CountryListScreen) {
             composable<Screen.CountryListScreen> {
                 FlagScreen(
-                    navController = navController,
+                    goBack = {
+                        navController.navigate(TopLevelRoute.HomeRoute) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = false
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    }
                 )
             }
         }
