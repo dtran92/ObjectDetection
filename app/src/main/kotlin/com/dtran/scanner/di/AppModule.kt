@@ -6,6 +6,8 @@ import com.dtran.scanner.data.database.AppDatabase
 import com.dtran.scanner.data.database.dao.CountryDao
 import com.dtran.scanner.data.network.repository.ApiRepository
 import com.dtran.scanner.data.network.repository.FirebaseRepository
+import com.dtran.scanner.data.network.service.ApiService
+import com.dtran.scanner.data.network.service.FirebaseService
 import com.dtran.scanner.ui.screen.flag.FlagViewModel
 import com.dtran.scanner.ui.screen.list.ListViewModel
 import com.dtran.scanner.ui.screen.login.LoginViewModel
@@ -20,7 +22,6 @@ import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
 import okhttp3.logging.HttpLoggingInterceptor
-import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -38,11 +39,16 @@ val networkModule = module {
 
             expectSuccess = true
             HttpResponseValidator {
+                validateResponse { response ->
+                    when (response.status.value) {
+                        in 300..399 -> throw RedirectResponseException(response, "300-399")
+                        in 400..499 -> throw ClientRequestException(response, "400-499")
+                        in 500..599 -> throw ServerResponseException(response, "500-599")
+                    }
+                }
+
                 handleResponseExceptionWithRequest { exception, _ ->
-                    val clientException =
-                        exception as? ClientRequestException ?: return@handleResponseExceptionWithRequest
-                    val exceptionResponse = clientException.response
-                    throw Exception("Error ${exceptionResponse.status.value}")
+                    throw exception
                 }
             }
 
@@ -60,13 +66,13 @@ val networkModule = module {
     }
 
     // Repository
-    single { FirebaseRepository() }
-    single { ApiRepository(get(), get(), androidContext()) }
+    single<FirebaseService> { FirebaseRepository() }
+    single<ApiService> { ApiRepository(get(), get(), androidContext()) }
 }
 
 val databaseModule = module {
     single {
-        Room.databaseBuilder(androidApplication(), AppDatabase::class.java, "Mydatabase")
+        Room.databaseBuilder(androidContext(), AppDatabase::class.java, "Mydatabase")
             .fallbackToDestructiveMigration().build()
     }
 

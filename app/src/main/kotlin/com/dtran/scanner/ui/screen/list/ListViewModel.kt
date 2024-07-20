@@ -4,13 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dtran.scanner.data.Status
 import com.dtran.scanner.data.network.model.Item
-import com.dtran.scanner.data.network.repository.FirebaseRepository
+import com.dtran.scanner.data.network.service.FirebaseService
 import com.dtran.scanner.ui.model.ItemUiModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 
-class ListViewModel(private val firebaseRepository: FirebaseRepository) : ViewModel() {
+class ListViewModel(private val firebaseRepository: FirebaseService) : ViewModel() {
     private val _itemList = MutableStateFlow(emptyList<ItemUiModel>())
     val itemList = _itemList.asStateFlow()
 

@@ -47,6 +47,7 @@ fun FlagScreen(
                 is Resource.Error -> {
                     progressIndicatorState.value = false
                     snackbarHostState.showSnackbar(it.error?.localizedMessage.toString())
+                    println("???")
                 }
 
                 is Resource.Success -> {

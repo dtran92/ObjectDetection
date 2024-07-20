@@ -3,13 +3,13 @@ package com.dtran.scanner.ui.screen.flag
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dtran.scanner.data.common.Resource
-import com.dtran.scanner.data.network.repository.ApiRepository
+import com.dtran.scanner.data.network.service.ApiService
 import com.dtran.scanner.ui.model.CountryUiModel
 import com.dtran.scanner.ui.model.MediaUiModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 
-class FlagViewModel(private val apiRepository: ApiRepository) : ViewModel() {
+class FlagViewModel(private val apiRepository: ApiService) : ViewModel() {
     private val _countryList = MutableStateFlow(listOf<CountryUiModel>())
     val countryList = _countryList.asStateFlow()
 
