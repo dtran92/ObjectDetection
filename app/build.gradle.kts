@@ -128,6 +128,8 @@ dependencies {
     // lottie
     implementation(libs.lottie.compose)
 
+    implementation(libs.play.services.ads)
+
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling.preview)
     debugImplementation(libs.androidx.compose.ui.test.manifest)

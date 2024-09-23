@@ -21,6 +21,8 @@ import com.dtran.scanner.navigation.Navigation
 import com.dtran.scanner.navigation.Screen
 import com.dtran.scanner.ui.theme.ScannerTheme
 import com.dtran.scanner.ui.widget.BottomBar
+import com.google.android.gms.ads.MobileAds
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.KoinAndroidContext
@@ -31,6 +33,8 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         setUpSplashScreen()
         super.onCreate(savedInstanceState)
+
+        setUpAdMobSDK()
         setContent {
             ScannerTheme {
                 // A surface container using the 'background' color from the theme
@@ -68,6 +72,12 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
+        }
+    }
+
+    private fun setUpAdMobSDK() {
+        lifecycleScope.launch(Dispatchers.IO) {
+            MobileAds.initialize(this@MainActivity) {}
         }
     }
 

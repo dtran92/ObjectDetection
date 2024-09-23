@@ -20,6 +20,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Scanner"
         tools:targetApi="s">
+
+        <meta-data
+                android:name="com.google.android.gms.ads.APPLICATION_ID"
+                android:value="ca-app-pub-1731296787058503~4020262448"/>
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
