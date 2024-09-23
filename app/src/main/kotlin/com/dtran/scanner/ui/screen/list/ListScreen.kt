@@ -6,13 +6,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
-import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -34,35 +31,12 @@ fun ListScreen(
     goBack: () -> Unit,
     goToWeb: (String) -> Unit
 ) {
-
     val itemList = viewModel.itemList.collectAsStateWithLifecycle()
     val revealedItemList = viewModel.revealedItemList.collectAsStateWithLifecycle()
     val progressIndicatorState = remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
     val pullToRefreshState = rememberPullToRefreshState()
-    if (pullToRefreshState.isRefreshing) {
-        LaunchedEffect(Unit) {
-            viewModel.refreshList().collectLatest {
-                when (it) {
-                    is Status.Loading -> progressIndicatorState.value = true
-
-                    is Status.Error -> {
-                        progressIndicatorState.value = false
-                        pullToRefreshState.endRefresh()
-                        snackbarHostState.showSnackbar(it.error.toString())
-                    }
-
-                    is Status.Success -> {
-                        progressIndicatorState.value = false
-                        pullToRefreshState.endRefresh()
-                        it.data?.let { items ->
-                            viewModel.updateList(items)
-                        }
-                    }
-                }
-            }
-        }
-    }
+    val isRefreshing = remember { mutableStateOf(false) }
     val showEmptyIcon = viewModel.shouldShowEmptyIcon.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
@@ -97,16 +71,41 @@ fun ListScreen(
             )
         },
         modifier = modifier.fillMaxSize(),
-    ) {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = modifier
-                .fillMaxSize()
-                .padding(it)
-                .nestedScroll(pullToRefreshState.nestedScrollConnection),
+    ) { padding ->
+        PullToRefreshBox(
+            isRefreshing = isRefreshing.value,
+            onRefresh = {
+                coroutineScope.launch {
+                    viewModel.refreshList().collectLatest {
+                        when (it) {
+                            is Status.Loading -> {
+                                isRefreshing.value = true
+                                progressIndicatorState.value = true
+                            }
+
+                            is Status.Error -> {
+                                isRefreshing.value = false
+                                progressIndicatorState.value = false
+                                snackbarHostState.showSnackbar(it.error.toString())
+                            }
+
+                            is Status.Success -> {
+                                isRefreshing.value = false
+                                progressIndicatorState.value = false
+                                it.data?.let { items ->
+                                    viewModel.updateList(items)
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            state = pullToRefreshState,
+            modifier = modifier.padding(padding)
         ) {
             LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(10.dp), modifier = modifier
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+                modifier = modifier
                     .padding(vertical = 10.dp)
                     .fillMaxSize()
             ) {
@@ -213,24 +212,17 @@ fun ListScreen(
 //                }
                 }
             }
+        }
 
-            PullToRefreshContainer(
-                state = pullToRefreshState,
-                containerColor = Color.White,
-                contentColor = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.align(Alignment.TopCenter)
-            )
-
-            when (showEmptyIcon.value) {
-                false -> Unit
-                true ->
+        when (showEmptyIcon.value) {
+            false -> Unit
+            true ->
 //                    LottieAnimation(composition.value, iterations = LottieConstants.IterateForever)
-                    Icon(
-                        painterResource(id = R.drawable.ic_empty_box),
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-            }
+                Icon(
+                    painterResource(id = R.drawable.ic_empty_box),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary
+                )
         }
     }
 
